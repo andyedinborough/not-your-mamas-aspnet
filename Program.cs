@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace minimal_web
+namespace web
 {
     public class Program
     {
