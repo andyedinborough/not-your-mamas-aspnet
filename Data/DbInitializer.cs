@@ -6,6 +6,7 @@ using web.Authentication;
 using web.Services.Post;
 using web.Services.User;
 using web.ViewModels.Post;
+using Microsoft.Extensions.Logging;
 
 namespace web.Data
 {
@@ -13,14 +14,18 @@ namespace web.Data
     {
         #region Methods
 
-        public static async Task InitializeAsync(DataContext context)
+        public static async Task InitializeAsync(DataContext context, ILogger logger)
         {
+            logger.LogInformation("Deleting database");
             await context.Database.EnsureDeletedAsync();
+
+            logger.LogInformation("Creating database");
             await context.Database.EnsureCreatedAsync();
 
             if (context.Users.Any()) return;
 
             var signupService = new SignupService(context);
+            logger.LogInformation("Creating user");
             var user = await signupService.SignupAsync(new ViewModels.User.SignupViewModel
             {
                 Name = "Andy Edinborough",
@@ -34,6 +39,7 @@ namespace web.Data
             var postService = new PostService(context);
             for (var i = 1; i <= 5; i++)
             {
+                logger.LogInformation($"Downloading image #{i}");
                 var image = await GetImageAsync(i);
                 var post = new PostCreateModel
                 {
@@ -41,13 +47,14 @@ namespace web.Data
                     File = new FormFile(image.stream, 0, image.length, "picture", $"image-{i}.jpg")
                 };
 
+                logger.LogInformation($"Creating post #{i}");
                 await postService.CreateAsync(post, user.Id);
             }
         }
 
         public static async Task<(Stream stream, long length)> GetImageAsync(int n)
         {
-            var request = System.Net.WebRequest.CreateHttp("http://placehold.it/500x500"); // $"http://lorempixel.com/500/500/cats/{n}/");
+            var request = System.Net.WebRequest.CreateHttp("https://unsplash.it/400/500/?random"); // $"http://lorempixel.com/500/500/cats/{n}/");
             using (var response = await request.GetResponseAsync())
             using (var stream = response.GetResponseStream())
             {

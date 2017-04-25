@@ -6,7 +6,7 @@
 </div>
 <div class="form-group">
     @Html.LabelFor(model => model.File)
-    @Html.TextBoxFor(model => model.File, new { @class = "form-control-file", type = "file" })
+    @Html.TextBoxFor(model => model.File, new { @class = "form-control-file", type = "file", accept="image/*" })
 </div>
 <div class="form-group">
     <button type="submit" class="btn btn-primary">Upload</button>

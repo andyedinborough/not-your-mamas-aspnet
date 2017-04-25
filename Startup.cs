@@ -67,7 +67,7 @@ namespace web
 
             try
             {
-                Task.Run(() => DbInitializer.InitializeAsync(context)).GetAwaiter().GetResult();
+                Task.Run(() => DbInitializer.InitializeAsync(context, loggerFactory.CreateLogger(nameof(DbInitializer)))).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
