@@ -29,7 +29,7 @@ namespace web.Controllers.Post
         {
             var stream = await _imageService.GetImageStreamAsync(postId);
             Response.ContentType = "image/jpeg";
-            await stream.CopyToAsync(Request.Body);
+            await stream.CopyToAsync(Response.Body);
         }
 
         protected override void Dispose(bool disposing)

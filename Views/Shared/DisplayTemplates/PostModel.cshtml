@@ -1,0 +1,14 @@
+﻿@model web.ViewModels.Post.PostModel
+
+<div class="card w-500px mb-2 ml-auto mr-auto">
+    <div class="card-header">
+        <a href="@Model.PostUrl" class="float-right">
+            <time datetime="@Model.EnteredAt.ToString("u")">@Model.EnteredAt.ToString("MMM d, yyyy hh:mmtt")</time>
+        </a>
+        @@@Model.EnteredBy.Username
+    </div>
+    <div class="card-img-top" style="background-image:url('@Model.ImageUrl')"></div>
+    <div class="card-block">
+        <p class="card-text">@Model.Caption</p>
+    </div>
+</div>

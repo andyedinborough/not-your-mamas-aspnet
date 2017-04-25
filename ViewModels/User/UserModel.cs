@@ -1,6 +1,4 @@
-﻿using web.Data.Entities;
-
-namespace web.ViewModels
+﻿namespace web.ViewModels.User
 {
     public class UserModel
     {
@@ -10,7 +8,7 @@ namespace web.ViewModels
         {
         }
 
-        public UserModel(User user)
+        public UserModel(Data.Entities.User user)
         {
             Name = user.Name;
             Email = user.Email;

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using web.Data;
 using web.ViewModels;
+using web.ViewModels.User;
 
 namespace web.Services.User
 {

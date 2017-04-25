@@ -3,9 +3,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using web.Services.User;
-using web.ViewModels;
+using web.ViewModels.User;
 
-namespace web.Validators
+namespace web.Validators.User
 {
     public class SignupViewModelValidator : AbstractValidator<SignupViewModel>, IDisposable
     {

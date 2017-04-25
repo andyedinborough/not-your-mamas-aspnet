@@ -1,7 +1,7 @@
 ﻿using System;
-using web.Data.Entities;
+using web.ViewModels.User;
 
-namespace web.ViewModels
+namespace web.ViewModels.Post
 {
     public class PostModel
     {
@@ -11,14 +11,14 @@ namespace web.ViewModels
         {
         }
 
-        public PostModel(Post post)
+        public PostModel(Data.Entities.Post post)
         {
             Caption = post.Caption;
             Id = post.Id;
             EnteredAt = post.EnteredAt;
             EnteredBy = new UserModel(post.EnteredBy);
-            PostUrl = new Uri($"/post/{post.Id}");
-            ImageUrl = new Uri($"/post/{post.Id}/image.jpg");
+            PostUrl = $"/post/{post.Id}";
+            ImageUrl = $"/post/{post.Id}/image.jpg";
         }
 
         #endregion
@@ -33,9 +33,9 @@ namespace web.ViewModels
 
         public int Id { get; set; }
 
-        public Uri ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
-        public Uri PostUrl { get; set; }
+        public string PostUrl { get; set; }
 
         #endregion
     }

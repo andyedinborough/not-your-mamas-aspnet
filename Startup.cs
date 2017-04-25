@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 using web.Authentication;
 using web.Data;
@@ -64,7 +65,14 @@ namespace web
 
             app.UseMvc();
 
-            Task.Run(() => DbInitializer.InitializeAsync(context)).GetAwaiter().GetResult();
+            try
+            {
+                Task.Run(() => DbInitializer.InitializeAsync(context)).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -77,7 +85,7 @@ namespace web
 
             services
                 .AddMvc()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Validators.LoginViewModelValidator>());
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Validators.User.LoginViewModelValidator>());
 
             services
                 .AddTransient<IDataContext, DataContext>()

@@ -4,14 +4,15 @@
     ViewData["Title"] = "Home Page";
 }
 
-@if(User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated)
 {
-    <form>
-    
+    <form method="post" asp-controller="Post" asp-action="Create" class="w-500px mr-auto ml-auto" enctype="multipart/form-data">
+        @Html.Partial("_PostCreateModel", new web.ViewModels.Post.PostCreateModel())
     </form>
 }
 
-@foreach(var post in Model.Posts)
+@foreach (var post in Model.Posts)
 {
+    <hr />
     @Html.DisplayFor(model => post)
 }

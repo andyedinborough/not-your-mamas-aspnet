@@ -64,7 +64,18 @@ namespace web.Services.Post
             var conn = _ctx.GetConnection();
             using (var cmd = conn.CreateCommand())
             {
-                cmd.CommandText = "update [PostPictures] set [Data] = @stream where [PostId] = @postId";
+                if (conn.State != ConnectionState.Open)
+                {
+                    await conn.OpenAsync();
+                }
+                cmd.CommandText = @"
+                    merge [PostPictures] as pp
+                    using (
+                        select @postId [PostId], @stream [Data]
+                    ) as incoming
+                    on (pp.PostId = incoming.PostId)
+                    when matched then update set [Data] = incoming.[Data]
+                    when not matched then insert (PostId, [Data]) values (incoming.PostId, incoming.[Data]);";
                 cmd.Parameters.Add(new SqlParameter(nameof(postId), postId));
                 cmd.Parameters.Add(new SqlParameter(nameof(stream), stream));
                 await cmd.ExecuteNonQueryAsync();

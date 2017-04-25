@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using web.ViewModels.Post;
 
 namespace web.ViewModels
 {

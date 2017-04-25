@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using web.Data.Entities;
-using System;
-using System.Data.Common;
 
 namespace web.Data
 {
@@ -19,6 +18,8 @@ namespace web.Data
 
         #region Properties
 
+        public DbSet<PostPicture> PostPictures { get; set; }
+
         public DbSet<Post> Posts { get; set; }
 
         IQueryable<Post> IDataContext.Posts => Posts;
@@ -31,11 +32,11 @@ namespace web.Data
 
         #region Methods
 
-        Task IDataContext.AddAsync<T>(T item) => AddAsync(item);
-
-        Task<int> IDataContext.SaveChangesAsync() => SaveChangesAsync();
+        async Task<T> IDataContext.AddAsync<T>(T item) => (await AddAsync(item)).Entity;
 
         public DbConnection GetConnection() => Database.GetDbConnection();
+
+        Task<int> IDataContext.SaveChangesAsync() => SaveChangesAsync();
 
         #endregion
     }

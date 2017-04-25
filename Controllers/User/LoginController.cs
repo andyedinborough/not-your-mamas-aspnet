@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using web.Authentication;
-using web.ViewModels;
+using web.ViewModels.User;
 
 namespace web.Controllers
 {
@@ -19,7 +19,7 @@ namespace web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await HttpContext.Authentication.SignInAsync(UserPrincipal.SCHEME, new UserPrincipal(model));
+                await HttpContext.Authentication.SignInAsync(UserPrincipal.SCHEME, new UserPrincipal(model.User));
                 return RedirectToAction("Index", "Home");
             }
             return View(model);

@@ -1,5 +1,9 @@
-﻿.image-square {
+﻿.card-img-top {
+    height: 400px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.w-500px {
     width: 500px;
-    height: 500px;
-    background-size: contain;
 }

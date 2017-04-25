@@ -12,7 +12,7 @@ namespace web.Data
         
         IQueryable<Post> Posts { get; }
 
-        Task AddAsync<T>(T item) where T : class;
+        Task<T> AddAsync<T>(T item) where T : class;
 
         Task<int> SaveChangesAsync();
 

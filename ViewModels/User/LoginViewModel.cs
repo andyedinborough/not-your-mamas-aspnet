@@ -1,6 +1,4 @@
-using web.Data.Entities;
-
-namespace web.ViewModels
+namespace web.ViewModels.User
 {
     public class LoginViewModel
     {
@@ -10,7 +8,7 @@ namespace web.ViewModels
 
         public string Password { get; set; }
 
-        public User User { get; set; }
+        public Data.Entities.User User { get; set; }
 
         #endregion
     }

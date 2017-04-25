@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace web.Services.Post
+namespace web.Data
 {
     public class StreamWrapper : Stream, IDisposable
     {
@@ -37,7 +37,11 @@ namespace web.Services.Post
         public override long Position
         {
             get => _stream.Position;
-            set => _stream.Position = value;
+            set
+            {
+                if (!CanSeek || _stream.Position == value) return;
+                _stream.Position = value;
+            }
         }
 
         #endregion
@@ -57,6 +61,7 @@ namespace web.Services.Post
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+            _stream.Dispose();
             if (disposing)
             {
                 _disposable.ForEach(Dispose);

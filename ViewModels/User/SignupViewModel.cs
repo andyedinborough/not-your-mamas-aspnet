@@ -1,4 +1,4 @@
-namespace web.ViewModels
+namespace web.ViewModels.User
 {
     public class SignupViewModel
     {
