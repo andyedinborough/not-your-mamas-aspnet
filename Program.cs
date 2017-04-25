@@ -1,13 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
-namespace console
+namespace minimal_web
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!: " + args?.FirstOrDefault());
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
+
+            host.Run();
         }
     }
 }
