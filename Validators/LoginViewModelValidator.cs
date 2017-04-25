@@ -1,8 +1,7 @@
+using FluentValidation;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using web.Data;
 using web.Services.User;
 using web.ViewModels;
 
@@ -10,7 +9,13 @@ namespace web.Validators
 {
     public class LoginViewModelValidator : AbstractValidator<LoginViewModel>, IDisposable
     {
+        #region Fields
+
         private readonly UserService _userService;
+
+        #endregion
+
+        #region Constructors
 
         public LoginViewModelValidator(UserService userService)
         {
@@ -20,14 +25,25 @@ namespace web.Validators
             RuleFor(model => model.Password).Length(6, 100).MustAsync(MatchAsync);
         }
 
+        #endregion
+
+        #region Methods
+
+        public void Dispose() => _userService.Dispose();
+
+        public bool IsPasswordValid(string userSubmittedPassword, string hashedPassword) => BCrypt.Net.BCrypt.Verify(userSubmittedPassword ?? string.Empty, hashedPassword ?? string.Empty);
+
         public async Task<bool> MatchAsync(LoginViewModel model, string userSubmittedPassword, CancellationToken cancel)
         {
             var user = await _userService.FindAsync(model.Email);
-            return IsPasswordValid(userSubmittedPassword, user.Password);
+            var valid = IsPasswordValid(userSubmittedPassword, user?.Password);
+            if(valid)
+            {
+                model.User = user;
+            }
+            return valid;
         }
 
-        public bool IsPasswordValid(string userSubmittedPassword, string hashedPassword) => BCrypt.Net.BCrypt.Verify(userSubmittedPassword ?? string.Empty, hashedPassword ?? string.Empty);
-        
-        public void Dispose() => _userService.Dispose();
+        #endregion
     }
 }

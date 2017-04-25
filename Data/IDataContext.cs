@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using web.Data.Entities;
@@ -14,5 +15,7 @@ namespace web.Data
         Task AddAsync<T>(T item) where T : class;
 
         Task<int> SaveChangesAsync();
+
+        DbConnection GetConnection();
     }
 }

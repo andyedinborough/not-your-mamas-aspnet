@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using web.Authentication;
+using web.Data;
+using web.Services.Post;
+using web.Services.User;
 
 namespace web
 {
     public class Startup
     {
+        #region Constructors
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -22,17 +27,17 @@ namespace web
             Configuration = builder.Build();
         }
 
+        #endregion
+
+        #region Properties
+
         public IConfigurationRoot Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Add framework services.
-            services.AddMvc();
-        }
+        #endregion
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        #region Methods
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DataContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -44,17 +49,44 @@ namespace web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
             }
 
             app.UseStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                AuthenticationScheme = UserPrincipal.SCHEME,
+                LoginPath = "/user/login",
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
             });
+
+            app.UseMvc();
+
+            Task.Run(() => DbInitializer.InitializeAsync(context)).GetAwaiter().GetResult();
         }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddDbContext<DataContext>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                });
+
+            services
+                .AddMvc()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Validators.LoginViewModelValidator>());
+
+            services
+                .AddTransient<IDataContext, DataContext>()
+                .AddTransient<SignupService>()
+                .AddTransient<UserService>()
+                .AddTransient<PostService>()
+                .AddTransient<ImageService>();
+        }
+
+        #endregion
     }
 }

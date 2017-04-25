@@ -3,6 +3,7 @@
 rm -rf bin/ obj/
 
 #build
+bower install
 dotnet restore
 dotnet publish -c Release
 

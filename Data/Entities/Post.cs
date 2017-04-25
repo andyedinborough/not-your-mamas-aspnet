@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace web.Data.Entities
 {
@@ -6,6 +7,7 @@ namespace web.Data.Entities
     {
         public int Id { get; set; }
 
+        [StringLength(160)]
         public string Caption { get; set; }
 
         public DateTimeOffset EnteredAt { get; set; } = DateTimeOffset.Now;
@@ -14,6 +16,5 @@ namespace web.Data.Entities
 
         public int EnteredById { get; set; }
 
-        public byte[] Picture { get; set; }
     }
 }

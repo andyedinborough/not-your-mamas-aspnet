@@ -1,40 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-using web.Services.User;
+using System.Threading.Tasks;
+using web.Authentication;
 using web.ViewModels;
 
 namespace web.Controllers
 {
     public class LoginController : Controller
     {
-        private LoginService _loginService;
-
-        public LoginController(LoginService loginService)
-        {
-            _loginService = loginService;
-        }
+        #region Methods
 
         [HttpGet]
+        [Route("user/login")]
         public IActionResult Login() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model) 
+        [Route("user/login")]
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var user = await _loginService.TryLoginAsync(model);
-            return View(model);
-        } 
-
-        protected override void Dispose(bool disposing)
-        {
-            if(disposing) 
+            if (ModelState.IsValid)
             {
-                _loginService.Dispose();
+                await HttpContext.Authentication.SignInAsync(UserPrincipal.SCHEME, new UserPrincipal(model));
+                return RedirectToAction("Index", "Home");
             }
-            base.Dispose(disposing);
+            return View(model);
         }
+
+        [Route("user/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.Authentication.SignOutAsync(UserPrincipal.SCHEME);
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
     }
 }
