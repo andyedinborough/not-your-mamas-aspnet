@@ -1,8 +1,9 @@
 #!/bin/bash
 #clean out the last publish
-rm -rf bin/
+rm -rf bin/ obj/
 
 #build
+dotnet restore
 dotnet publish -c Release
 
 #stop the service
